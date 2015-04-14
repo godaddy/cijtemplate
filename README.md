@@ -1,5 +1,9 @@
 # cijtemplate
-Helper files for Data Science Workshop presentation
+A template for continuous integration with Jenkins.
+
+Use this repo as a starting point for a new Python Django project. It will provide a build pipeline that will perform unit tests, quality tests, integration tests and upon passing, deploy to production. Having this framework setup at the start of a new project will accelerate development. It assumes TDD (Test Driven Development) and will fail builds if unit test coverage drops below 90% (configurable). It also includes Sonar for code quality tests. This template uses the Sonar [Python Plugin](http://docs.sonarqube.org/display/SONAR/Python+Plugin) for quality tests.
+
+The Django project provided in this repo is a dummy project that does nothing but display a home page. This is on purpose, the point isn't the Django application, but rather the Continous Integration and Continuous Deployment (CI/CD) pipeline.  Use this template to quickly setup your CI/CD pipeline, so you can get to the important part faster: coding your application.
 
 ## Build Boxes
 ### Build the Jenkins server first
