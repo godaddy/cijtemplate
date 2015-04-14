@@ -147,4 +147,3 @@ cat /var/lib/jenkins/.ssh/id_rsa.pub
 -  DO NOT: build when a change is published to github
 -  Build: execute shell: ./scripts/ci_test.PROD
 -  Post build: n/a
-
