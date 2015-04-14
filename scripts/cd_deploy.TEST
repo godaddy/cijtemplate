@@ -1,0 +1,1 @@
+fab -i ~/.ssh/id_rsa -u jenkins -H 192.169.165.237 deploy

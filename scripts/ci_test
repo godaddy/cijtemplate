@@ -1,0 +1,5 @@
+#!/bin/bash
+#Run integration tests
+
+# Run all of your tests...
+APP_MODE="test" nosetests -v --processes=4 --process-timeout=60 integration/

@@ -1,0 +1,32 @@
+#!/bin/bash -x
+SONAR_RUNNER_HOME=/opt/sonar-runner-2.4; export SONAR_RUNNER_HOME
+PATH=$PATH:$SONAR_RUNNER_HOME/bin; export PATH
+
+# wipe out the test database if it exists.
+# it exists when previous test faulted.  it's existence
+# will cause the unit test to prompt for cleanup, which jenkins
+# cannot answer.  Solution, drop the database if it exists first:
+mysql -u root -e "DROP DATABASE IF EXISTS test_cijtemplate"
+
+# TEMP FIX UNTIL I FIGURE OUT WHY SONAR DOESN'T LIKE THIS
+$(which rm) cijtemplate/passenger_wsi.py
+
+mkdir reports
+python3 manage.py test --with-xunit --with-coverage --cover-erase --cover-xml --cover-xml-file=reports/coverage.xml --xunit-file=reports/unit_test.xml --cover-branches --cover-inclusive
+if [[ $? -ne 0 ]]; then
+    echo "test::test execution failure"
+    exit 1
+fi
+
+$SONAR_RUNNER_HOME/bin/sonar-runner
+if [[ $? -ne 0 ]]; then
+    echo "test::detected sonar-runner failure"
+    exit 1
+fi
+
+python3 scripts/sonar.py
+if [[ $? -ne 0 ]]; then
+    exit 1
+fi
+
+exit 0

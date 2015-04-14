@@ -1,0 +1,12 @@
+#!/bin/bash -x
+
+## Make directory for results
+mkdir -p ./results/unit
+mkdir -p ./results/logs
+mkdir -p ./results/coverage
+./setupenv.sh
+./scripts/test
+if [[ $? -ne 0 ]]; then
+    echo "ci_build::scripts/test did NOT succeed"
+    exit 1
+fi

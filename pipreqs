@@ -1,0 +1,6 @@
+Django==1.7
+git+https://github.com/pashinin/fabric.git@6783d2f7ad7a449c97cd1ee0df9a2dbc29422fce
+--allow-external mysql-connector-python
+mysql-connector-python
+requests==2.5.1
+django_nose
