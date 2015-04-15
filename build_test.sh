@@ -80,8 +80,10 @@ su - jenkins -c "git config --global user.name 'jenkins'"
 mkdir -p /opt/cijtemplate
 cd /opt/cijtemplate
 NOW=$(date +"%Y%m%d%H%M%S")
-mkdir $NOW
-git clone git@github.com:godaddy/cijtemplate.git $NOW
+rm -rf /tmp/$NOW
+su - jenkins -c "git clone git@github.com:godaddy/cijtemplate.git /tmp/$NOW"
+mv /tmp/$NOW .
+rm -f current
 ln -s $NOW current
 cd current
 ./setupenv.sh
