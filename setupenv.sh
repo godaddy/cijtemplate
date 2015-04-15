@@ -13,5 +13,4 @@ sudo ${PIP_CMD} install -r pipreqs
 if [ -z "$APP_MODE" -o "$APP_MODE" == "dev" ]; then
     sudo ${PIP_CMD} install -r pipreqs-dev
 fi
-${PYTHON_CMD} manage.py migrate
 exit 0
