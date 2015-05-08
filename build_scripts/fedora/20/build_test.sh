@@ -13,6 +13,7 @@ MYSQL_CICD_DB=cijtemplate
 MYSQL_CICD_PASS=sOmeS3cureP8ss
 JENKINS_KEY='replace with value from jenkins server:/var/lib/jenkins/.ssh/id_rsa.pub'
 JENKINS_PRIVATE_KEY='replace with value from jenkins server:/var/lib/jenkins/.ssh/id_rsa'
+APP_MODE="test"
 
 
 # GET NEEDED SOFTWARE INSTALLED
@@ -153,8 +154,8 @@ openssl req -nodes -newkey rsa:2048 -keyout server.key -out server.csr -subj "/C
 openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 
 # SET THE APP MODE
-cat > /etc/profile.d/app_mode.sh <<'EOF'
-export APP_MODE="test"
+cat > /etc/profile.d/app_mode.sh <<EOF
+export APP_MODE="${APP_MODE}"
 EOF
 chmod 755 /etc/profile.d/app_mode.sh
 

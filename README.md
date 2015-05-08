@@ -8,12 +8,20 @@ The Django project provided in this repo is a dummy project that does nothing bu
 ## Build Boxes
 ### Build the Jenkins server first
 Start with fedora-20 *medium* - you want at least 2GB of RAM to run jenkins and sonar together.
-Use the build_jenkins.sh as a bootScript on the JENKINS server. 
-Change the variables to your desired values.
+Start with
+```
+build_scripts/fedora/20/build_jenkins.sh
+```
+and use as a bootScript to create the JENKINS server. Change the variables to your desired values.
 
 ### Build the TEST and PROD boxes second
 Use fedora-20 tiny (or bigger, your choice)
-Use the build_test.sh as a bootScript on the TEST server, replacing the variables with your desired values.
+Use
+```
+build_scripts/fedora/20/build_test.sh
+```
+ as a bootScript on the TEST server, replacing the variables with your desired values.
+
 Get the JENKINS_KEY and JENKINS_PRIVATE_KEY from the jenkins server:
 ```
 /var/lib/jenkins/.ssh/id_rsa.pub
