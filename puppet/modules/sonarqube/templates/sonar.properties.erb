@@ -1,0 +1,335 @@
+#--------------------------------------------------------
+# To use an environment variable, use the following syntax :  ${env:NAME_OF_ENV_VARIABLE}
+# For example :
+#   sonar.jdbc.url: ${env:SONAR_JDBC_URL}
+#
+#
+# See also the file conf/wrapper.conf for JVM advanced settings
+#---------------------------------------------------------
+# WEB SETTINGS - STANDALONE MODE ONLY
+# These settings are ignored when the war file is deployed to a JEE server.
+#---------------------------------------------------------
+# Listen host/port and context path (for example / or /sonar). Default values are 0.0.0.0:9000/.
+<% if @host -%>
+sonar.web.host:                           <%= @host %>
+<% else -%>
+#sonar.web.host:                           0.0.0.0
+<% end -%>
+sonar.web.port:                           <%= @port %>
+sonar.ajp.port:                           <%= @portAjp %>
+<% if has_variable?('context_path') -%>
+sonar.web.context:                        <%= @context_path %>
+<% end -%>
+
+# Log HTTP requests. Deactivated by default.
+#sonar.web.jettyRequestLogs: ../../logs/jetty-yyyy_mm_dd.request.log
+
+#sonar.web.jetty.threads.min:              5
+#sonar.web.jetty.threads.max:              50
+
+# Web server is executed in a dedicated Java process. By default heap size is 768Mb.
+# Use the following property to customize JVM options.
+#    Recommendations:
+#
+#    The HotSpot Server VM is recommended. The property -server should be added if server mode
+#    is not enabled by default on your environment: http://docs.oracle.com/javase/7/docs/technotes/guides/vm/server-class.html
+#
+#    Set min and max memory (respectively -Xms and -Xmx) to the same value to prevent heap
+#    from resizing at runtime.
+#
+<% if @web_java_opts -%>
+sonar.web.javaOpts=<%= @web_java_opts %>
+<% end -%>
+
+<% if !@https.empty? -%>
+#-------------------
+# SonarQube Https Configuration
+#-------------------
+
+
+# TCP port for incoming HTTPS connections. Disabled when value is -1 (default).
+
+<% if @https['port'] -%>
+sonar.web.https.port=<%= @https['port'] %>
+<% else -%>
+sonar.web.https.port=-1
+<% end -%>
+
+# HTTPS - the alias used to for the server certificate in the keystore.
+# If not specified the first key read in the keystore is used.
+
+<% if @https['keyalias'] -%>
+sonar.web.https.keyAlias=<%= @https['keyalias'] %>
+<% else -%>
+# sonar.web.https.keyAlias=
+<% end -%>
+
+# HTTPS - the pathname of the keystore file where is stored the server certificate.
+# By default, the pathname is the file ".keystore" in the user home.
+# If keystoreType doesn't need a file use empty value.
+
+<% if @https['keystorefile'] -%>
+sonar.web.https.keystoreFile=<%= @https['keystorefile'] %>
+<% else -%>
+# sonar.web.https.keystoreFile=
+<% end -%>
+
+# HTTPS - the password used to access the specified keystore file. The default
+# value is the value of sonar.web.https.keyPass.
+
+<% if @https['keystorepass'] -%>
+sonar.web.https.keystorePass=<%= @https['keystorepass'] %>
+<% else -%>
+# sonar.web.https.keystorePass=
+<% end -%>
+
+# HTTPS - the password used to access the server certificate from the
+# specified keystore file. The default value is "changeit".
+
+<% if @https['keypass'] -%>
+sonar.web.https.keyPass=<%= @https['keypass'] %>
+<% else -%>
+# sonar.web.https.keyPass=changeit
+<% end -%>
+
+# HTTPS - the type of keystore file to be used for the server certificate.
+# The default value is JKS (Java KeyStore).
+
+<% if @https['keystoretype'] -%>
+sonar.web.https.keystoreType=<%= @https['keystoretype'] %>
+<% else -%>
+# sonar.web.https.keystoreType=
+<% end -%>
+
+<% end -%>
+
+
+#--------------------------------------------------------------------------------------------------
+# ELASTICSEARCH
+# Elasticsearch is used to facilitate fast and accurate information retrieval.
+# It is executed in a dedicated Java process.
+
+# JVM options of Elasticsearch process
+#    Recommendations:
+#
+#    Use HotSpot Server VM. The property -server should be added if server mode
+#    is not enabled by default on your environment: http://docs.oracle.com/javase/7/docs/technotes/guides/vm/server-class.html
+#
+#    Set min and max memory (respectively -Xms and -Xmx) to the same value to prevent heap
+#    from resizing at runtime.
+#
+<% if @search_java_opts -%>
+sonar.search.javaOpts=<%= @search_java_opts %>
+<% end -%>
+
+sonar.search.port=<%= @search_port %>
+sonar.search.host=<%= @search_host %>
+
+#-----------------------------------------------------------------------
+# DATABASE
+#
+# IMPORTANT : the embedded database Derby is used by default.
+# It is recommended for tests only. Please use an external database
+# for production environment (MySQL, Oracle, Postgresql, SQLServer)
+#
+#-----------------------------------------------------------------------
+
+<% if !@jdbc.empty? -%>
+
+#----- Credentials
+# Permissions to create tables and indexes must be granted to JDBC user.
+# The schema must be created first.
+sonar.jdbc.url:         <%= @jdbc['url'] %>
+sonar.jdbc.username:    <%= @jdbc['username'] %>
+sonar.jdbc.password:    <%= @jdbc['password'] %>
+
+#----- Embedded database H2
+# Note : it does not accept connections from remote hosts, so the
+# SonarQube server and the maven plugin must be executed on the same host.
+
+# Comment the following line to deactivate the default embedded database.
+#sonar.jdbc.url:                            jdbc:h2:tcp://localhost:9092/sonar
+
+# directory containing H2 database files. By default it's the /data directory in the SonarQube installation.
+#sonar.embeddedDatabase.dataDir:
+# H2 embedded database server listening port, defaults to 9092
+#sonar.embeddedDatabase.port:               9092
+
+
+#----- MySQL 5.x
+# Comment the embedded database and uncomment the following line to use MySQL
+#sonar.jdbc.url:                            jdbc:mysql://localhost:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
+
+
+#----- Oracle 10g/11g
+# To connect to Oracle database :
+#
+# - It's recommended to use the latest version of the JDBC driver (ojdbc6.jar).
+#   Download it in http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html
+# - Copy the driver to the directory extensions/jdbc-driver/oracle/
+# - Comment the embedded database and uncomment the following line :
+#sonar.jdbc.url:                            jdbc:oracle:thin:@localhost/XE
+#
+
+# Uncomment the following property if the Oracle account has permissions to access multiple schemas,
+# for example sonar schemas with different versions. In that case, use the same property during project analysis
+# (-Dsonar.jdbc.schema=<schema>)
+# The schema is case-sensitive.
+#sonar.jdbc.schema:                         sonar
+
+
+#----- PostgreSQL 8.x/9.x
+# Comment the embedded database and uncomment the following property to use PostgreSQL
+#sonar.jdbc.url:                            jdbc:postgresql://localhost/sonar
+
+
+# Uncomment the following property if the PostgreSQL account has permissions to access multiple schemas,
+# for example sonar schemas with different versions. In that case, use the same property during project analysis
+# (-Dsonar.jdbc.schema=<schema>)
+#sonar.jdbc.schema:                         public
+
+
+#----- Microsoft SQLServer
+# The Jtds open source driver is available in extensions/jdbc-driver/mssql. More details on http://jtds.sourceforge.net
+#sonar.jdbc.url:                            jdbc:jtds:sqlserver://localhost/sonar;SelectMethod=Cursor
+
+
+#----- Connection pool settings
+sonar.jdbc.maxActive:                      <% if @jdbc['max_active'] %><%= @jdbc['max_active'] %><% else %>50<% end %>
+sonar.jdbc.maxIdle:                        <% if @jdbc['max_idle'] %><%= @jdbc['max_idle'] %><% else %>5<% end %>
+sonar.jdbc.minIdle:                        <% if @jdbc['min_idle'] %><%= @jdbc['min_idle'] %><% else %>2<% end %>
+sonar.jdbc.maxWait:                        <% if @jdbc['max_wait'] %><%= @jdbc['max_wait'] %><% else %>5000<% end %>
+sonar.jdbc.minEvictableIdleTimeMillis:     <% if @jdbc['min_evictable_idle_time_millis'] %><%= @jdbc['min_evictable_idle_time_millis'] %><% else %>600000<% end %>
+sonar.jdbc.timeBetweenEvictionRunsMillis:  <% if @jdbc['time_between_eviction_runs_millis'] %><%= @jdbc['time_between_eviction_runs_millis'] %><% else %>30000<% end %>
+
+<% end -%>
+
+#---------------------------------------------------------
+# UPDATE CENTER
+#---------------------------------------------------------
+
+# The Update Center requires an internet connection to request http://update.sonarsource.org
+# It is activated by default:
+sonar.updatecenter.activate=<%= @updatecenter %>
+
+<% if !@http_proxy.empty? -%>
+# HTTP proxy (default none)
+http.proxyHost=<%= @http_proxy['host'] %>
+http.proxyPort=<%= @http_proxy['port'] %>
+
+# NT domain name if NTLM proxy is used
+http.auth.ntlm.domain=<%= @http_proxy['ntlm_domain'] %>
+
+# proxy authentication. The 2 following properties are used for HTTP and SOCKS proxies.
+http.proxyUser=<%= @http_proxy['user'] %>
+http.proxyPassword=<%= @http_proxy['password'] %>
+<% end -%>
+
+# SOCKS proxy (default none)
+#socksProxyHost=
+#socksProxyPort=
+
+#---------------------------------------------------------
+# NOTIFICATIONS
+#---------------------------------------------------------
+
+# Delay (in seconds) between processing of notification queue
+sonar.notifications.delay=60
+
+
+<% if !@ldap.empty? -%>
+#-------------------
+# SonarQube LDAP Plugin
+# Reference: http://docs.sonarqube.org/display/SONAR/LDAP+Plugin
+#-------------------
+
+# IMPORTANT : before activation, make sure that one SonarQube administrator is defined in the external system
+# Activates the plugin. Leave blank or comment out to use default SonarQube authentication.
+sonar.security.realm=LDAP
+<% if @ldap['save_password'] -%>
+sonar.security.savePassword=<%= @ldap['save_password'] %>
+<% else -%>
+sonar.security.savePassword=true
+<% end -%>
+<% if @ldap['local_users'] -%>
+sonar.security.localUsers=<%= [@ldap['local_users']].flatten.join(',') %>
+<% end -%>
+<% if @ldap['authenticator_downcase'] -%>
+sonar.authenticator.downcase=<%= @ldap['authenticator_downcase'] %>
+<% end -%>
+
+ldap.url=<%= @ldap['url'] %>
+
+<% if @ldap['bind_dn'] -%>
+ldap.bindDn=<%= @ldap['bind_dn'] %>
+<% end -%>
+<% if @ldap['bind_password'] -%>
+ldap.bindPassword=<%= @ldap['bind_password'] %>
+<% end -%>
+<% if @ldap['authentication'] -%>
+ldap.authentication=<%= @ldap['authentication'] %>
+<% end -%>
+
+<% if @ldap['user_base_dn'] -%>
+ldap.user.baseDn: <%= @ldap['user_base_dn'] %>
+<% end -%>
+<% if @ldap['user_request'] -%>
+ldap.user.request: <%= @ldap['user_request'] %>
+<% end -%>
+<% if @ldap['user_real_name_attribute'] -%>
+ldap.user.realNameAttribute=<%= @ldap['user_real_name_attribute'] %>
+<% end -%>
+<% if @ldap['user_email_attribute'] -%>
+ldap.user.emailAttribute=<%= @ldap['user_email_attribute'] %>
+<% end -%>
+
+<% if @ldap['group_base_dn'] -%>
+ldap.group.baseDn=<%= @ldap['group_base_dn'] %>
+<% end -%>
+<% if @ldap['group_request'] -%>
+ldap.group.request=<%= @ldap['group_request'] %>
+<% end -%>
+<% if @ldap['group_id_attribute'] -%>
+ldap.group.idAttribute=<%= @ldap['group_id_attribute'] %>
+<% end -%>
+
+<% elsif !@pam.empty? -%>
+
+# PAM authentication
+sonar.security.realm: PAM
+<% if @pam['serviceName'] -%>
+pam.serviceName=<%= @pam['serviceName'] %>
+<% end -%>
+
+<% end -%>
+
+<% if !@crowd.empty? %>
+#-------------------
+# Sonar Crowd Plugin
+#-------------------
+# IMPORTANT : before activation, make sure that one Sonar administrator is defined in the external system
+# Activates the plugin. Leave blank or comment out to use default sonar authentication.
+sonar.authenticator.class: org.sonar.plugins.crowd.CrowdAuthenticator
+
+# Ignore failure at startup if the connection to external system is refused.
+# Users can browse sonar but not log in as long as the connection fails.
+# When set to true, Sonar will not start if connection to external system fails.
+# Default is false.
+#sonar.authenticator.ignoreStartupFailure: true
+
+# Automatically create users (available since Sonar 2.0).
+# When set to true, user will be created after successful authentication, if doesn't exists.
+# The default group affected to new users can be defined online, in Sonar general settings. The default value is "sonar-users".
+# Default is false.
+sonar.authenticator.createUsers: true
+
+# URL of the Crowd server (usually ends with /services/).
+crowd.url: <%= @crowd['service_url'] %>
+
+# Crowd application name.
+# Default is 'sonar'.
+crowd.application: <%= @crowd['application'] %>
+
+# Crowd application password.
+crowd.password: <%= @crowd['password'] %>
+<% end %>
