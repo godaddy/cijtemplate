@@ -10,6 +10,8 @@ It's half baked and not working right now. Will remove this notice when working 
 puppet module install maestrodev-sonarqube --modulepath=modules
 puppet module install puppetlabs-java --modulepath=modules
 puppet module install jfryman-nginx --modulepath=modules
+puppet module install jfryman-nginx --modulepath=modules
+puppet module install rtyler-jenkins --modulepath=modules
 
 ## How to run masterless puppet
 

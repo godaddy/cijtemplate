@@ -6,3 +6,7 @@ modules/sonarqube
 modules/stdlib
 modules/wget
 modules/apt
+modules/jenkins
+modules/archive
+modules/staging
+modules/zypprepo
